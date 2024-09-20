@@ -9,7 +9,8 @@ work_dir = "../work" # Specify the location where do you want to save the comput
 println("Number of available threads = $(Threads.nthreads())") # For parallel computing > 1
 Threads.@threads for i in eachindex(time_delay)
     save_dir = "$(work_dir)/$(i-1)"
-    run(`mkdir -p $(save_dir)`) # Make a different directory for each time delay
+    # run(`mkdir -p $(save_dir)`) # Make a different directory for each time delay
+    mkpath("$(save_dir)")
     x_range, phi_range, pr_data = dataload("$(load_dir)/$(i-1)", (-1000, 1000), 1000) #Calculate the PDF from data
     writedlm("$(save_dir)/i-.dat", collect(x_range))
     writedlm("$(save_dir)/phi.dat", collect(phi_range))
