@@ -8,7 +8,7 @@ using Base.Threads
 using DelimitedFiles
 using KernelDensity
 
-export tomography, dataload
+export tomography, dataload, dataload2
 
 function dataload(filename :: String, kde_lims :: Tuple, num_points :: Int64)
     data_array = readdlm(filename)
@@ -17,6 +17,18 @@ function dataload(filename :: String, kde_lims :: Tuple, num_points :: Int64)
     # for i in 1:size(data_array, 2)
     for i in axes(data_array, 2)
         y = kde(data_array[:, i], boundary=kde_lims, npoints=num_points)
+        pr[i, :] = y.density
+    end
+    return range(kde_lims[1], kde_lims[2], length=num_points), phi_data, pr
+end
+
+function dataload2(signal_data, kde_lims :: Tuple, num_points :: Int64)
+    # signal_data is 2D array of signal and motor_postion_T
+    phi_data = range(0, 2*pi, length=size(signal_data, 2))
+    pr = zeros(size(signal_data, 2), num_points)
+    # for i in 1:size(data_array, 2)
+    for i in axes(signal_data, 2)
+        y = kde(signal_data[:, i], boundary=kde_lims, npoints=num_points)
         pr[i, :] = y.density
     end
     return range(kde_lims[1], kde_lims[2], length=num_points), phi_data, pr
